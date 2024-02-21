@@ -1,0 +1,38 @@
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project]
+name = "xdist-scheduler-ordered"
+dynamic = [ "version",]
+description = "pytest-xdist scheduler that runs tests in order specified in a list. can significantly improve runtime by ordering long tests to start early."
+keywords = [ "opensearch", "log", "log-handler",]
+classifiers = [ "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent",]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+[[project.authors]]
+name = "Andrey Sorokin"
+email = "andrey@sorokin.engineer"
+
+[project.license]
+file = "LICENSE.txt"
+
+[project.urls]
+Homepage = "https://andgineer.github.io/xdist-scheduler-ordered/"
+Documentation = "https://andgineer.github.io/xdist-scheduler-ordered/"
+
+[tool.setuptools]
+packages = "find:"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.manifest]
+include = [ "README.md", "LICENSE.txt",]
+
+[tool.ruff]
+line-length = 99
+
+[tool.hatch.version]
+path = "src/xdist_scheduler_ordered/__about__.py"

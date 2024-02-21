@@ -1,0 +1,23 @@
+# test
+pytest
+pytest-cov
+coveralls
+
+# lint
+pre-commit
+mypy
+pylint
+pydocstyle
+
+# docs
+lazydocs
+mkdocs-material
+pymdown-extensions
+mkdocs-awesome-pages-plugin
+
+# build & reqs management
+pip-tools
+hatchling
+toml
+uv
+
