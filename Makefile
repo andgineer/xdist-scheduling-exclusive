@@ -22,8 +22,8 @@ ver-release:
 reqs:
 	pre-commit autoupdate
 	bash ./scripts/compile_requirements.sh
-	pip install -r requirements.txt
-	pip install -r requirements.dev.txt
+	uv pip install -r requirements.txt
+	uv pip install -r requirements.dev.txt
 
 .PHONY: docs # mark as phony so it always runs even we have a docs folder
 .HELP: docs  ## Docs preview English
