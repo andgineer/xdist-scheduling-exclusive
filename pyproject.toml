@@ -25,14 +25,14 @@ Documentation = "https://andgineer.github.io/xdist-scheduler-ordered/"
 [tool.setuptools]
 packages = "find:"
 
+[tool.ruff]
+line-length = 99
+
 [tool.setuptools.package-dir]
 "" = "src"
 
 [tool.setuptools.manifest]
 include = [ "README.md", "LICENSE.txt",]
-
-[tool.ruff]
-line-length = 99
 
 [tool.hatch.version]
 path = "src/xdist_scheduler_ordered/__about__.py"
