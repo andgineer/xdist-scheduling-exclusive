@@ -1,6 +1,7 @@
 #!make
 VERSION := $(shell grep '__version__' src/xdist_scheduler_ordered/__about__.py | cut -d '"' -f2)
 export VERSION
+unexport CONDA_PREFIX  # if conda is installed, it will mess with the virtual env
 
 .HELP: version ## Show the current version
 version:
@@ -22,7 +23,6 @@ ver-release:
 reqs:
 	pre-commit autoupdate
 	bash ./scripts/compile_requirements.sh
-	uv pip install -r requirements.txt
 	uv pip install -r requirements.dev.txt
 
 .PHONY: docs # mark as phony so it always runs even we have a docs folder
