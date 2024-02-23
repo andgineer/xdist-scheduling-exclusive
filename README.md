@@ -4,9 +4,17 @@
 
 pytest-xdist scheduler that runs some tests on dedicated workers. can significantly improve runtime by running long tests on separate workers.
 
-# Documentation
+# Usage
 
-[Xdist Scheduler Ordered](https://andgineer.github.io/xdist-scheduling-exclusive/en/)
+Add to `conftest.py`:
+
+```python
+from xdist_scheduling_exclusive.exclusive_scheduling import ExclusiveScheduling
+
+def pytest_xdist_make_scheduler(config, log):
+    """xdist-pytest hook to set scheduler."""
+    return ExclusiveScheduling(config, log)
+```
 
 # Developers
 
