@@ -3,9 +3,9 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [project]
-name = "xdist-scheduler-ordered"
+name = "xdist-scheduling-exclusive"
 dynamic = [ "version",]
-description = "pytest-xdist scheduler that runs tests in order specified in a list. can significantly improve runtime by ordering long tests to start early."
+description = "pytest-xdist scheduler that runs some tests on dedicated workers. can significantly improve runtime by running long tests on separate workers."
 keywords = [ "opensearch", "log", "log-handler",]
 classifiers = [ "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent",]
 readme = "README.md"
@@ -19,8 +19,8 @@ email = "andrey@sorokin.engineer"
 file = "LICENSE.txt"
 
 [project.urls]
-Homepage = "https://andgineer.github.io/xdist-scheduler-ordered/"
-Documentation = "https://andgineer.github.io/xdist-scheduler-ordered/"
+Homepage = "https://andgineer.github.io/xdist-scheduling-exclusive/"
+Documentation = "https://andgineer.github.io/xdist-scheduling-exclusive/"
 
 [tool.setuptools]
 packages = "find:"
@@ -35,4 +35,4 @@ line-length = 99
 include = [ "README.md", "LICENSE.txt",]
 
 [tool.hatch.version]
-path = "src/xdist_scheduler_ordered/__about__.py"
+path = "src/xdist_scheduling_exclusive/__about__.py"

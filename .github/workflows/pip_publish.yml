@@ -57,6 +57,6 @@ jobs:
         tag_name: ${{ env.RELEASE_VERSION }}
         release_name: Release ${{ env.RELEASE_VERSION }}
 
-        body: https://pypi.org/project/xdist-scheduler-ordered/${{ env.RELEASE_VERSION }}/
+        body: https://pypi.org/project/xdist-scheduling-exclusive/${{ env.RELEASE_VERSION }}/
         draft: false
         prerelease: false

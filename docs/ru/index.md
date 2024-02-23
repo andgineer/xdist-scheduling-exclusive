@@ -1,2 +1,2 @@
-# xdist-scheduler-ordered
+# xdist-scheduling-exclusive
 

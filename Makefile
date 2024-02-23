@@ -1,5 +1,5 @@
 #!make
-VERSION := $(shell grep '__version__' src/xdist_scheduler_ordered/__about__.py | cut -d '"' -f2)
+VERSION := $(shell grep '__version__' src/xdist_scheduling_exclusive/__about__.py | cut -d '"' -f2)
 export VERSION
 unexport CONDA_PREFIX  # if conda is installed, it will mess with the virtual env
 
@@ -29,13 +29,13 @@ reqs:
 .HELP: docs  ## Docs preview English
 docs:
 	./scripts/docstrings.sh
-	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduler-ordered/
+	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduling-exclusive/
 	mkdocs serve -f docs/mkdocs-en.yml
 
 .HELP: docs-ru  ## Docs preview Russian
 docs-ru:
 	./scripts/docstrings.sh
-	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduler-ordered/
+	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduling-exclusive/
 	mkdocs serve -f docs/mkdocs-ru.yml
 
 .HELP: help  ## Display this message

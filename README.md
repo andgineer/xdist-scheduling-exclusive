@@ -1,12 +1,12 @@
-[![Build Status](https://github.com/andgineer/xdist-scheduler-ordered/workflows/CI/badge.svg)](https://github.com/andgineer/xdist-scheduler-ordered/actions)
-[![Coverage](https://raw.githubusercontent.com/andgineer/xdist-scheduler-ordered/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/xdist-scheduler-ordered/blob/python-coverage-comment-action-data/htmlcov/index.html)
-# xdist-scheduler-ordered
+[![Build Status](https://github.com/andgineer/xdist-scheduling-exclusive/workflows/CI/badge.svg)](https://github.com/andgineer/xdist-scheduling-exclusive/actions)
+[![Coverage](https://raw.githubusercontent.com/andgineer/xdist-scheduling-exclusive/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/xdist-scheduling-exclusive/blob/python-coverage-comment-action-data/htmlcov/index.html)
+# xdist-scheduling-exclusive
 
-pytest-xdist scheduler that runs tests in order specified in a list. can significantly improve runtime by ordering long tests to start early. 
+pytest-xdist scheduler that runs some tests on dedicated workers. can significantly improve runtime by running long tests on separate workers.
 
 # Documentation
 
-[Xdist Scheduler Ordered](https://andgineer.github.io/xdist-scheduler-ordered/en/)
+[Xdist Scheduler Ordered](https://andgineer.github.io/xdist-scheduling-exclusive/en/)
 
 # Developers
 
@@ -16,5 +16,5 @@ Do not forget to run `. ./activate.sh`.
     make help
 
 ## Coverage report
-* [Codecov](https://app.codecov.io/gh/andgineer/xdist-scheduler-ordered/tree/main/src%2Fxdist_scheduler_ordered)
-* [Coveralls](https://coveralls.io/github/andgineer/xdist-scheduler-ordered)
+* [Codecov](https://app.codecov.io/gh/andgineer/xdist-scheduling-exclusive/tree/main/src%2Fxdist_scheduling_exclusive)
+* [Coveralls](https://coveralls.io/github/andgineer/xdist-scheduling-exclusive)

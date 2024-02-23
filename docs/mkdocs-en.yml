@@ -1,11 +1,11 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
-site_name: xdist_scheduler_ordered
-site_url: https://andgineer.github.io/xdist-scheduler-ordered
+site_name: xdist_scheduling_exclusive
+site_url: https://andgineer.github.io/xdist-scheduling-exclusive
 site_author: Andrey Sorokin
 
 # Repository
-repo_name: xdist_scheduler_ordered
-repo_url: https://github.com/andgineer/xdist-scheduler-ordered
+repo_name: xdist_scheduling_exclusive
+repo_url: https://github.com/andgineer/xdist-scheduling-exclusive
 edit_uri: edit/master/docs
 docs_dir: 'en'
 site_dir: '../site/en'
@@ -33,8 +33,8 @@ theme:
 extra:
   alternate:
     - name: English
-      link: /xdist_scheduler_ordered/en/
+      link: /xdist_scheduling_exclusive/en/
       lang: en
     - name: Russian
-      link: /xdist_scheduler_ordered/ru/
+      link: /xdist_scheduling_exclusive/ru/
       lang: ru

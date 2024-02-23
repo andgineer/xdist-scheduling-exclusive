@@ -1,4 +1,4 @@
-# xdist-scheduler-ordered
+# xdist-scheduling-exclusive
 
 Python logging handler for direct and efficient log transmission to 
 OpenSearch. 
@@ -9,4 +9,4 @@ OpenSearch.
 
 # source code
 
-[sorokin.engineer/xdist-scheduler-ordered](https://github.com/andgineer/xdist-scheduler-ordered)
+[sorokin.engineer/xdist-scheduling-exclusive](https://github.com/andgineer/xdist-scheduling-exclusive)

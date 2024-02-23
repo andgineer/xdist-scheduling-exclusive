@@ -1,3 +1,3 @@
-# xdist-scheduler-ordered
+# xdist-scheduling-exclusive
 
-pytest-xdist scheduler that runs tests in order specified in a list. can significantly improve runtime by ordering long tests to start early. 
+pytest-xdist scheduler that runs some tests on dedicated workers. can significantly improve runtime by running long tests on separate workers.
