@@ -35,7 +35,7 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
         At __init__ tests are not collected so we do lazy initialization.
         Calculate at first access and use cache afterward.
         """
-        if self._exclusive_tests_indices is None:
+        if not hasattr(self, "_exclusive_tests_indices"):
             self._exclusive_tests_indices = [
                 self.collection.index(
                     name
