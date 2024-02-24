@@ -2,7 +2,16 @@
 [![Coverage](https://raw.githubusercontent.com/andgineer/xdist-scheduling-exclusive/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/andgineer/xdist-scheduling-exclusive/blob/python-coverage-comment-action-data/htmlcov/index.html)
 # xdist-scheduling-exclusive
 
-pytest-xdist scheduler that runs some tests on dedicated workers. can significantly improve runtime by running long tests on separate workers.
+pytest-xdist scheduler that runs some tests on dedicated workers. 
+
+Can significantly improve runtime by running long tests on separate 
+workers.
+
+# Installation
+
+```bash
+pip install xdist-scheduling-exclusive
+```
 
 # Usage
 
