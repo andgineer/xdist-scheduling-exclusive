@@ -17,9 +17,7 @@ REQUIREMENTS_FILE_NAME = "requirements.txt"
 def main(requirements_file_name: str, section_path: str) -> None:
     """Include requirements.txt in pyproject.toml project.dependencies array."""
     with open(requirements_file_name, "r", encoding="utf8") as f:
-        requirements = [
-            line.strip() for line in f if line.strip() and not line.lstrip().startswith("#")
-        ]
+        requirements = [line.strip() for line in f if line.strip() and not line.lstrip().startswith("#")]
     print(
         f"From {requirements_file_name} read requirements:"
         f"\n{requirements[:10]}...\n...{len(requirements)} total"
