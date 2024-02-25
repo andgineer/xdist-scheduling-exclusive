@@ -8,6 +8,8 @@ from typing import Any, List
 from xdist.dsession import LoadScheduling
 from xdist.workermanage import WorkerController
 
+from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
+
 
 class ExclusiveScheduling(LoadScheduling):  # type: ignore
     """Custom xdist scheduling.
@@ -19,7 +21,7 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
     def __init__(self, config: Any, log: Any) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
-        self.exclusive_tests = self.load_exclusive_tests()
+        self.exclusive_tests = load_exclusive_tests()
         self.trace(f"ExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
     def trace(self, *message: str) -> None:
@@ -93,15 +95,3 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
             self.node2pending[node].extend(tests_to_send)
             node.send_runtest_some(tests_to_send)
 
-    def load_exclusive_tests(
-        self, filename: str = "tests/resources/exclusive_tests.txt"
-    ) -> list[str]:
-        """Load tests from exclusive_tests.txt."""
-        try:
-            with open(filename, "r", encoding="utf8") as f:
-                return [
-                    line.strip() for line in f if line.strip() and not line.strip().startswith("#")
-                ]
-        except FileNotFoundError:
-            self.trace(f"Exclusive tests list '{filename}' not found.")
-            return []
