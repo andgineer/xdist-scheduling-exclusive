@@ -6,61 +6,14 @@ from xdist.remote import Producer
 from xdist.workermanage import parse_spec_config
 from xdist.report import report_collection_diff
 
-
 class LoadFileExclusiveScheduling:
-    """Implement load scheduling across nodes.
-
-    This distributes the tests collected across all nodes so each test
-    is run just once.  All nodes collect and submit the test suite and
-    when all collections are received it is verified they are
-    identical collections.  Then the collection gets divided up in
-    chunks and chunks get submitted to nodes.  Whenever a node finishes
-    an item, it calls ``.mark_test_complete()`` which will trigger the
-    scheduler to assign more tests if the number of pending tests for
-    the node falls below a low-watermark.
-
-    When created, ``numnodes`` defines how many nodes are expected to
-    submit a collection. This is used to know when all nodes have
-    finished collection or how large the chunks need to be created.
-
-    Attributes:
-
-    :numnodes: The expected number of nodes taking part.  The actual
-       number of nodes will vary during the scheduler's lifetime as
-       nodes are added by the DSession as they are brought up and
-       removed either because of a dead node or normal shutdown.  This
-       number is primarily used to know when the initial collection is
-       completed.
-
-    :node2collection: Map of nodes and their test collection.  All
-       collections should always be identical.
-
-    :node2pending: Map of nodes and the indices of their pending
-       tests.  The indices are an index into ``.pending`` (which is
-       identical to their own collection stored in
-       ``.node2collection``).
-
-    :collection: The one collection once it is validated to be
-       identical between all the nodes.  It is initialised to None
-       until ``.schedule()`` is called.
-
-    :pending: List of indices of globally pending tests.  These are
-       tests which have not yet been allocated to a chunk for a node
-       to process.
-
-    :log: A py.log.Producer instance.
-
-    :config: Config object, used for handling hooks.
-    """
-
     def __init__(self, config, log=None):
-        self.long_tests = self.load_long_tests()
-        self.long_tests_assigned = False  # Flag to check if long tests have been assigned
         self.numnodes = len(parse_spec_config(config))
         self.node2collection = {}
         self.node2pending = {}
         self.pending = []
         self.collection = None
+        self.exclusive_tests = self.load_exclusive_tests()
         if log is None:
             self.log = Producer("loadsched")
         else:
@@ -68,14 +21,28 @@ class LoadFileExclusiveScheduling:
         self.config = config
         self.maxschedchunk = self.config.getoption("maxschedchunk")
 
-    def load_long_tests(self, filename="tests/resources/long_tests.txt"):
+    @property
+    def dedicated_test_nodes(self):
+        """Dynamically determine nodes dedicated to running exclusive tests."""
+        exclusive_test_count = len(self.exclusive_tests)
+        all_nodes = list(self.node2pending.keys())
+        # Dedicate the first N nodes to exclusive tests, where N is the number of exclusive tests
+        return all_nodes[:exclusive_test_count]
+
+    @property
+    def regular_nodes(self):
+        """Dynamically determine nodes that are not dedicated to exclusive tests."""
+        exclusive_test_count = len(self.exclusive_tests)
+        all_nodes = list(self.node2pending.keys())
+        assert len(all_nodes) >= exclusive_test_count, f"There are more exclusive tests ({exclusive_test_count}) than nodes ({all_nodes})"
+        return all_nodes[exclusive_test_count:]
+
+    def load_exclusive_tests(self, filename="tests/resources/exclusive_tests.txt"):
         try:
             with open(filename, "r") as f:
-                return [
-                    line.strip() for line in f if line.strip() and not line.strip().startswith("#")
-                ]
+                return [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
         except FileNotFoundError:
-            self.log(f"Long test list '{filename} not found'.")
+            self.log(f"Exclusive test list '{filename} not found'.")
             return []
 
     @property
@@ -263,15 +230,13 @@ class LoadFileExclusiveScheduling:
         if self.maxschedchunk is None:
             self.maxschedchunk = len(self.collection)
 
-        # Send a batch of tests to run. If we don't have at least two
-        # tests per node, we have to send them all so that we can send
-        # shutdown signals and get all nodes working.
-        if len(self.pending) < 2 * len(self.nodes):
-            # Distribute tests round-robin. Try to load all nodes if there are
-            # enough tests. The other branch tries sends at least 2 tests
-            # to each node - which is suboptimal when you have less than
-            # 2 * len(nodes) tests.
-            nodes = cycle(self.nodes)
+        # Custom scheduling for exclusive tests on dedicated nodes
+        for node in self.dedicated_test_nodes:
+            self._send_tests(node, 1)
+
+        # Adjust pending tests after exclusive tests have been scheduled
+        if len(self.pending) < 2 * len(self.regular_nodes):
+            nodes = cycle(self.regular_nodes)
             for i in range(len(self.pending)):
                 self._send_tests(next(nodes), 1)
         else:
@@ -295,11 +260,30 @@ class LoadFileExclusiveScheduling:
                 node.shutdown()
 
     def _send_tests(self, node, num):
-        tests_per_node = self.pending[:num]
-        if tests_per_node:
-            del self.pending[:num]
-            self.node2pending[node].extend(tests_per_node)
-            node.send_runtest_some(tests_per_node)
+        tests_for_node = []
+
+        # First, check if the node is dedicated for exclusive tests
+        if node in self.dedicated_test_nodes:
+            # Attempt to find the first exclusive test for dedicated nodes
+            for index, test in enumerate(self.pending):
+                if self.collection[test] in self.exclusive_tests:
+                    # Schedule the found exclusive test and remove it from pending
+                    tests_for_node = [self.pending.pop(index)]
+                    break  # Exit after scheduling the first found exclusive test
+            # If no exclusive tests are pending, and only then, schedule a non-exclusive test
+            if not tests_for_node:
+                tests_for_node = self.pending[:num]
+                del self.pending[:num]
+        else:
+            # For non-dedicated nodes, find up to num non-exclusive tests
+            non_exclusive_tests = [test for test in self.pending if self.collection[test] not in self.exclusive_tests][:num]
+            tests_for_node.extend(non_exclusive_tests)
+            for test in non_exclusive_tests:
+                self.pending.remove(test)  # Remove the scheduled tests from pending
+
+        if tests_for_node:
+            self.node2pending[node].extend(tests_for_node)
+            node.send_runtest_some(tests_for_node)
 
     def _check_nodes_have_same_collection(self):
         """Return True if all nodes have collected the same items.
