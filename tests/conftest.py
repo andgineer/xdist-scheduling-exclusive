@@ -5,10 +5,16 @@ import os
 from datetime import datetime
 from tempfile import gettempdir
 
+from xdist_scheduling_exclusive.exclusive_scheduling import ExclusiveScheduling
+
 XDIST_REPORT_OPTION = "--xdist-report"
 
 # Define the directory for data storage.
 DATA_DIR = os.path.join(gettempdir(), "xdist_data")
+
+def pytest_xdist_make_scheduler(config, log):
+    """xdist-pytest hook to set scheduler."""
+    return ExclusiveScheduling(config, log)
 
 
 def ensure_execution_data_dir_exists():
