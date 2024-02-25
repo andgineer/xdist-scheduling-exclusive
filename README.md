@@ -28,6 +28,10 @@ def pytest_xdist_make_scheduler(config, log):
 Also there is alternative scheduler `ExclusiveLoadFileScheduling` which works like xdist `loadfile` scheduler, 
 but put exclusive tests into separate groups so they can run in parallel even if defined in one file.
 
+If you want to place in the exclusive list long running tests use
+[--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
+option of the pytest to get list of tests sorted by duration.
+
 # Developers
 
 Do not forget to run `. ./activate.sh`.
