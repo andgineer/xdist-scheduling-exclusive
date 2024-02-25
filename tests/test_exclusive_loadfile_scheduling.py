@@ -1,6 +1,9 @@
+import time
+
 import pytest
 from unittest.mock import Mock, patch
 
+from tests.conftest import let_xdist_tick
 from xdist_scheduling_exclusive.exclusive_loadfile_scheduling import ExclusiveLoadFileScheduling, EXCLUSIVE_TEST_SCOPE_PREFIX
 
 @pytest.fixture

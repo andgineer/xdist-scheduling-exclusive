@@ -13,6 +13,13 @@ XDIST_REPORT_OPTION = "--xdist-report"
 # Define the directory for data storage.
 DATA_DIR = os.path.join(gettempdir(), "xdist_data")
 
+
+@pytest.fixture(autouse=True)
+def let_xdist_tick():
+    """Let xdist tick."""
+    time.sleep(0.01)
+
+
 def pytest_xdist_make_scheduler(config, log):
     """xdist-pytest hook to set scheduler."""
     return LoadFileExclusiveScheduling(config, log)
