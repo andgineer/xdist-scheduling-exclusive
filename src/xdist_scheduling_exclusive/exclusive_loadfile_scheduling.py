@@ -12,17 +12,15 @@ EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 class ExclusiveLoadFileScheduling(LoadFileScheduling):  # type: ignore  # pylint: disable=abstract-method
     """Custom xdist scheduling.
 
-    Place tests from exclusive_tests.txt to separate test groups.
-    Other tests are grouped by test file, all tests from the same file run on the same worker.
+    Place tests from exclusive_tests.txt to unique test groups.
+    Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
     """
 
     def __init__(self, config: Any, log: Any) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
         self.exclusive_tests = load_exclusive_tests()
-        self.trace(
-            f"ExclusiveLoadFileScheduling have loaded {len(self.exclusive_tests)} exclusive tests."
-        )
+        self.trace(f"ExclusiveLoadFileScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
     def trace(self, *message: str) -> None:
         """Print a message with a timestamp."""

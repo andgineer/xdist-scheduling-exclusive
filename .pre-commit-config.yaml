@@ -36,6 +36,6 @@ repos:
 
       - id: pylint
         name: Pylint
-        entry: pylint --max-line-length=99 --ignore-imports=yes
+        entry: pylint --max-line-length=110 --ignore-imports=yes
         files: \.py$
         language: python

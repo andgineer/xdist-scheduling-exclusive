@@ -1,14 +1,14 @@
 import pytest
 from unittest.mock import Mock, patch, mock_open, MagicMock
-from xdist_scheduling_exclusive.exclusive_scheduling import ExclusiveScheduling
+from xdist_scheduling_exclusive import ExclusiveLoadScheduling
 from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
 
 
 @pytest.fixture
 def mock_exclusive_scheduling():
     # Patch the __init__ method of the parent class to prevent it from running
-    with patch('xdist_scheduling_exclusive.exclusive_scheduling.ExclusiveScheduling.__init__', return_value=None):
-        exclusive_scheduling = ExclusiveScheduling(Mock(), Mock())
+    with patch('xdist_scheduling_exclusive.exclusive_load_scheduling.ExclusiveLoadScheduling.__init__', return_value=None):
+        exclusive_scheduling = ExclusiveLoadScheduling(Mock(), Mock())
         exclusive_scheduling.node2pending = MagicMock()  # Mocking the node2pending attribute
         exclusive_scheduling.collection = MagicMock()  # Mocking the collection if necessary
         exclusive_scheduling.pending = MagicMock()  # Mocking the pending list

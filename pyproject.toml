@@ -26,7 +26,7 @@ Documentation = "https://andgineer.github.io/xdist-scheduling-exclusive/"
 packages = "find:"
 
 [tool.ruff]
-line-length = 99
+line-length = 110
 
 [tool.setuptools.package-dir]
 "" = "src"

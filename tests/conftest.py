@@ -5,8 +5,9 @@ import os
 from datetime import datetime
 from tempfile import gettempdir
 
-from xdist_scheduling_exclusive.exclusive_scheduling import ExclusiveScheduling
-from xdist_scheduling_exclusive.loadfile_exclusive import LoadFileExclusiveScheduling
+from xdist_scheduling_exclusive import ExclusiveLoadScopeScheduling  # noqa
+from xdist_scheduling_exclusive import ExclusiveLoadScheduling  # noqa
+from xdist_scheduling_exclusive import ExclusiveLoadFileScheduling  # noqa
 
 XDIST_REPORT_OPTION = "--xdist-report"
 
@@ -22,7 +23,9 @@ def let_xdist_tick():
 
 def pytest_xdist_make_scheduler(config, log):
     """xdist-pytest hook to set scheduler."""
-    return LoadFileExclusiveScheduling(config, log)
+    # return ExclusiveLoadScopeScheduling(config, log)
+    # return ExclusiveLoadScheduling(config, log)
+    return ExclusiveLoadFileScheduling(config, log)
 
 
 def ensure_execution_data_dir_exists():

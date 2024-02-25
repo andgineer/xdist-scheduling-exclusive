@@ -10,30 +10,34 @@ workers.
 # Installation
 
 ```bash
-pip install xdist-scheduling-exclusive
+pip install xdist-scheduling-exclusive pytest-xdist
 ```
 
 # Usage
 
-Add to `conftest.py`:
+To integrate with your pytest setup, update conftest.py as follows:
 
 ```python
-from xdist_scheduling_exclusive import ExclusiveScheduling
+from xdist_scheduling_exclusive import ExclusiveLoadScopeScheduling
 
 def pytest_xdist_make_scheduler(config, log):
     """xdist-pytest hook to set scheduler."""
-    return ExclusiveScheduling(config, log)
+    return ExclusiveLoadScopeScheduling(config, log)
 ```
 
-Also there is alternative scheduler `ExclusiveLoadFileScheduling` which works like xdist `loadfile` scheduler, 
-but put exclusive tests into separate groups so they can run in parallel even if defined in one file.
+### Available Schedulers:
+- `ExclusiveLoadScheduling` Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
+- `ExclusiveLoadFileScheduling`: Place tests from `exclusive_tests.txt` to unique `scopes`.
+Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
+- `ExclusiveLoadScopeScheduling`: Schedule tests from `exclusive_tests.txt` first and on dedicated nodes. 
+Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
 
-If you want to place in the exclusive list long running tests use
+### Optimizing for Long-Running Tests:
+To identify long-running tests for the exclusive list, utilize pytest's
 [--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
-option of the pytest to get list of tests sorted by duration.
+option to sort tests by execution time.
 
 # Developers
-
 Do not forget to run `. ./activate.sh`.
 
 To see how tests were scheduled use something like

@@ -1,4 +1,4 @@
-"""pytest-xdist LoadFileScheduling descendant that schedule exclusive tests to dedicated nodes."""
+"""pytest-xdist LoadScopeScheduling descendant that schedule exclusive tests to dedicated nodes."""
 import sys
 from datetime import datetime
 from typing import Any, Optional, Set
@@ -9,17 +9,19 @@ from xdist.scheduler.loadfile import LoadScopeScheduling
 EXCLUSIVE_TEST_SCOPE_PREFIX = "__-exclusive-test-__"
 
 
-class LoadFileExclusiveScheduling(LoadScopeScheduling):  # type: ignore  # pylint: disable=abstract-method
-    """Custom xdist scheduling."""
+class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pylint: disable=abstract-method
+    """Custom xdist scheduling.
+
+    Schedule tests from exclusive_tests.txt first and on dedicated nodes.
+    Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
+    """
 
     def __init__(self, config: Any, log: Optional[Any] = None) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
         self.exclusive_tests_scheduled: Set[str] = set()
         self.exclusive_tests = self.load_exclusive_tests()
-        self.trace(
-            f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests."
-        )
+        self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
         self.dedicated_nodes_assigned = False
 
     def trace(self, *message: str) -> None:
@@ -28,15 +30,11 @@ class LoadFileExclusiveScheduling(LoadScopeScheduling):  # type: ignore  # pylin
         full_message = f"[#]{timestamp}[#] {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
-    def load_exclusive_tests(
-        self, filename: str = "tests/resources/exclusive_tests.txt"
-    ) -> list[str]:
+    def load_exclusive_tests(self, filename: str = "tests/resources/exclusive_tests.txt") -> list[str]:
         """Load tests from a file."""
         try:
             with open(filename, "r", encoding="utf8") as f:
-                return [
-                    line.strip() for line in f if line.strip() and not line.strip().startswith("#")
-                ]
+                return [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
         except FileNotFoundError:
             self.log(f"Exclusive test list '{filename} not found'.")
             return []

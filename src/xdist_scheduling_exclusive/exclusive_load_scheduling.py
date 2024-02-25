@@ -9,7 +9,7 @@ from xdist.workermanage import WorkerController
 from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
 
 
-class ExclusiveScheduling(LoadScheduling):  # type: ignore
+class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
     """Custom xdist scheduling.
 
     Run tests from exclusive_tests.txt on separate xdist nodes.
@@ -54,8 +54,7 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
         for exclusive_test in self.exclusive_tests_indices[:]:  # Copy list for safe iteration
             if exclusive_test in self.pending:
                 self.trace(
-                    f"Send exclusive test {self.collection[exclusive_test]} "
-                    f"to the node {node.gateway.id}"
+                    f"Send exclusive test {self.collection[exclusive_test]} " f"to the node {node.gateway.id}"
                 )
                 self.pending.remove(exclusive_test)
                 tests_to_send.append(exclusive_test)
