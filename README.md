@@ -18,12 +18,15 @@ pip install xdist-scheduling-exclusive
 Add to `conftest.py`:
 
 ```python
-from xdist_scheduling_exclusive.exclusive_scheduling import ExclusiveScheduling
+from xdist_scheduling_exclusive import ExclusiveScheduling
 
 def pytest_xdist_make_scheduler(config, log):
     """xdist-pytest hook to set scheduler."""
     return ExclusiveScheduling(config, log)
 ```
+
+Also there is alternative scheduler `ExclusiveLoadFileScheduling` which works like xdist `loadfile` scheduler, 
+but put exclusive tests into separate groups so they can run in parallel even if defined in one file.
 
 # Developers
 

@@ -1,7 +1,4 @@
-"""pytest-xdist scheduler that runs some tests on dedicated workers.
-
-Can significantly improve runtime by running long tests on separate workers.
-"""
+"""pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
 from datetime import datetime
 from typing import Any, List
 
@@ -14,7 +11,8 @@ from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
 class ExclusiveScheduling(LoadScheduling):  # type: ignore
     """Custom xdist scheduling.
 
-    Run tests from exclusive_tests.txt on separate xdist nodes."""
+    Run tests from exclusive_tests.txt on separate xdist nodes.
+    """
 
     _exclusive_tests_indices: List[int]
 
