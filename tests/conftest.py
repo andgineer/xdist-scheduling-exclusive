@@ -23,9 +23,9 @@ def let_xdist_tick():
 
 def pytest_xdist_make_scheduler(config, log):
     """xdist-pytest hook to set scheduler."""
-    # return ExclusiveLoadScopeScheduling(config, log)
+    return ExclusiveLoadScopeScheduling(config, log)
     # return ExclusiveLoadScheduling(config, log)
-    return ExclusiveLoadFileScheduling(config, log)
+    # return ExclusiveLoadFileScheduling(config, log)
 
 
 def ensure_execution_data_dir_exists():
