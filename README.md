@@ -2,11 +2,12 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/andgineer/xdist-scheduling-exclusive/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                                      |    Stmts |     Miss |   Cover |   Missing |
-|---------------------------------------------------------- | -------: | -------: | ------: | --------: |
-| src/xdist\_scheduling\_exclusive/\_\_about\_\_.py         |        1 |        1 |      0% |         1 |
-| src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py |       54 |       36 |     33% |21-23, 27-29, 50-94, 105-107 |
-|                                                 **TOTAL** |   **55** |   **37** | **33%** |           |
+| Name                                                       |    Stmts |     Miss |   Cover |   Missing |
+|----------------------------------------------------------- | -------: | -------: | ------: | --------: |
+| src/xdist\_scheduling\_exclusive/\_\_about\_\_.py          |        1 |        1 |      0% |         1 |
+| src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py  |       48 |        7 |     85% |23-25, 73, 86-91 |
+| src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py |        6 |        0 |    100% |           |
+|                                                  **TOTAL** |   **55** |    **8** | **85%** |           |
 
 
 ## Setup coverage badge
