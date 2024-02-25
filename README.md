@@ -36,6 +36,10 @@ option of the pytest to get list of tests sorted by duration.
 
 Do not forget to run `. ./activate.sh`.
 
+To see how tests were scheduled use something like
+
+    python -m pytest -n 4 --xdist-report -s
+
 # Scripts
     make help
 

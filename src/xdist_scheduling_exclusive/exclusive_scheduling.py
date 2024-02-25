@@ -1,4 +1,5 @@
 """pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
+import sys
 from datetime import datetime
 from typing import Any, List
 
@@ -26,7 +27,7 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
         """Print a message with a timestamp."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         full_message = f"[#]{timestamp}[#] {' '.join(message)}"
-        print(full_message)
+        print(full_message, file=sys.stderr)
 
     @property
     def exclusive_tests_indices(self) -> list[int]:
@@ -46,47 +47,35 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
         return self._exclusive_tests_indices
 
     def _send_tests(self, node: WorkerController, num: int) -> None:
-        """Called in LoadScheduling."""
         tests_to_send = []
-        tests_to_send_num = num
+        exclusive_sent = False
 
-        # Send one exclusive test if available
-        for i, test in enumerate(self.exclusive_tests_indices):
-            if test in self.pending:
+        # Attempt to send exclusive tests first
+        for exclusive_test in self.exclusive_tests_indices[:]:  # Copy list for safe iteration
+            if exclusive_test in self.pending:
                 self.trace(
-                    f"Send exclusive test {self.collection[test]} to the node {node.gateway.id}"
+                    f"Send exclusive test {self.collection[exclusive_test]} "
+                    f"to the node {node.gateway.id}"
                 )
-                self.pending.remove(test)
-                tests_to_send.append(test)
-                del self.exclusive_tests_indices[
-                    i
-                ]  # Remove the exclusive test we sent from the list
-                tests_to_send_num -= 1
-                break  # Only send one exclusive test
+                self.pending.remove(exclusive_test)
+                tests_to_send.append(exclusive_test)
+                self.exclusive_tests_indices.remove(exclusive_test)  # Remove sent test
+                exclusive_sent = True
+                break  # Ensure only one exclusive test is sent per call
 
-        if not tests_to_send:
-            # Fill in with regular pending tests, excluding any that are exclusive
-            for test in self.pending[:]:  # Iterate over a shallow copy to allow modification
-                if tests_to_send_num == 0:
-                    break  # Stop early if we have enough tests
-                if test not in self.exclusive_tests_indices:
-                    self.trace(
-                        f"Send non-exclusive test {self.collection[test]} "
-                        f"to the node {node.gateway.id}"
-                    )
-                    tests_to_send.append(test)
-                    self.pending.remove(test)  # Now safe to modify the original list
-                    tests_to_send_num -= 1
-
-            # If we do not have enough non-exclusive tests, send from the head of the pending tests
-            fallback_tests = self.pending[:tests_to_send_num]
-            if fallback_tests:
-                self.trace(
-                    f"FAIL to isolate {len(fallback_tests)} exclusive test(s), "
-                    f"send them to the node {node.gateway.id}"
-                )
-                del self.pending[:tests_to_send_num]
-                tests_to_send.extend(fallback_tests)
+        if not exclusive_sent:
+            # If no exclusive test was sent, fill in with regular pending tests
+            for test in self.pending[:]:  # Copy list for safe iteration
+                if len(tests_to_send) < num:
+                    if test not in self.exclusive_tests_indices:
+                        self.trace(
+                            f"Send non-exclusive test {self.collection[test]} "
+                            f"to the node {node.gateway.id}"
+                        )
+                        tests_to_send.append(test)
+                        self.pending.remove(test)
+                else:
+                    break  # Stop if we have enough tests to send
 
         # Send the collected tests to the node
         if tests_to_send:

@@ -58,7 +58,7 @@ def test_load_exclusive_tests_file_missing(mock_exclusive_scheduling):
 def test_trace_functionality(mock_exclusive_scheduling, capsys):
     mock_exclusive_scheduling.trace("Test message")
     captured = capsys.readouterr()
-    assert "Test message" in captured.out
+    assert "Test message" in captured.err
 
 
 def test_fallback_to_send_non_exclusive_when_no_exclusives_left(mock_exclusive_scheduling):
