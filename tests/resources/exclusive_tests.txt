@@ -1,1 +1,2 @@
 tests/test_mock_exclusive.py::test_exclusive_1
+tests/test_mock_exclusive.py::test_exclusive_2

@@ -1,21 +1,26 @@
+"""pytest-xdist LoadFileScheduling descendant that schedule exclusive tests to dedicated nodes."""
 import sys
 from datetime import datetime
-from itertools import cycle
+from typing import Any, Optional, Set
 
-from _pytest.runner import CollectReport
-
-from xdist.remote import Producer
-from xdist.scheduler import LoadScheduling
 from xdist.scheduler.loadfile import LoadScopeScheduling
-from xdist.workermanage import parse_spec_config
-from xdist.report import report_collection_diff
 
 
-class LoadFileExclusiveScheduling(LoadScopeScheduling):
-    def __init__(self, config, log=None):
+EXCLUSIVE_TEST_SCOPE_PREFIX = "__-exclusive-test-__"
+
+
+class LoadFileExclusiveScheduling(LoadScopeScheduling):  # type: ignore  # pylint: disable=abstract-method
+    """Custom xdist scheduling."""
+
+    def __init__(self, config: Any, log: Optional[Any] = None) -> None:
+        """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
+        self.exclusive_tests_scheduled: Set[str] = set()
         self.exclusive_tests = self.load_exclusive_tests()
-        self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
+        self.trace(
+            f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests."
+        )
+        self.dedicated_nodes_assigned = False
 
     def trace(self, *message: str) -> None:
         """Print a message with a timestamp."""
@@ -23,58 +28,65 @@ class LoadFileExclusiveScheduling(LoadScopeScheduling):
         full_message = f"[#]{timestamp}[#] {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
-    @property
-    def dedicated_test_nodes(self):
-        """Dynamically determine nodes dedicated to running exclusive tests."""
-        exclusive_test_count = len(self.exclusive_tests)
-        all_nodes = list(self.node2pending.keys())
-        # Dedicate the first N nodes to exclusive tests, where N is the number of exclusive tests
-        return all_nodes[:exclusive_test_count]
-
-    @property
-    def regular_nodes(self):
-        """Dynamically determine nodes that are not dedicated to exclusive tests."""
-        exclusive_test_count = len(self.exclusive_tests)
-        all_nodes = list(self.node2pending.keys())
-        assert len(all_nodes) >= exclusive_test_count, f"There are more exclusive tests ({exclusive_test_count}) than nodes ({all_nodes})"
-        return all_nodes[exclusive_test_count:]
-
-    def load_exclusive_tests(self, filename="tests/resources/exclusive_tests.txt"):
+    def load_exclusive_tests(
+        self, filename: str = "tests/resources/exclusive_tests.txt"
+    ) -> list[str]:
+        """Load tests from a file."""
         try:
-            with open(filename, "r") as f:
-                return [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+            with open(filename, "r", encoding="utf8") as f:
+                return [
+                    line.strip() for line in f if line.strip() and not line.strip().startswith("#")
+                ]
         except FileNotFoundError:
             self.log(f"Exclusive test list '{filename} not found'.")
+            return []
 
-    def _send_tests(self, node, num):
-        tests_for_node = []
+    def _assign_work_unit(self, node: Any) -> None:
+        # First, attempt to assign exclusive tests if any are unscheduled
+        exclusive_tests_to_schedule = set(self.exclusive_tests) - self.exclusive_tests_scheduled
+        if exclusive_tests_to_schedule:
+            for scope, work_unit in self.workqueue.items():
+                # Find if any test in the current scope is exclusive and unscheduled
+                exclusive_test_in_scope = any(test in self.exclusive_tests for test in work_unit)
+                if exclusive_test_in_scope:
+                    # Schedule the exclusive test
+                    self._schedule_exclusive_test(node, scope, work_unit)
+                    return  # Exit after scheduling an exclusive test to ensure prioritization
 
-        # First, check if the node is dedicated for exclusive tests
-        if node in self.dedicated_test_nodes:
-            # Attempt to find the first exclusive test for dedicated nodes
-            for index, test in enumerate(self.pending):
-                if self.collection[test] in self.exclusive_tests:
-                    # Schedule the found exclusive test and remove it from pending
-                    tests_for_node = [self.pending.pop(index)]
-                    self.trace(f"Send exclusive test {self.collection[tests_for_node[0]]} to the node {node.gateway.id}")
-                    break  # Exit after scheduling the first found exclusive test
-            # If no exclusive tests are pending, and only then, schedule a non-exclusive test
-            if not tests_for_node:
-                tests_for_node = self.pending[:num]
-                del self.pending[:num]
-                self.trace(f"Send non-exclusive {len(tests_for_node)} tests to the node {node.gateway.id}")
+        # If no exclusive tests need scheduling, fall back to the parent method
+        super()._assign_work_unit(node)
+
+    def _schedule_exclusive_test(self, node: Any, scope: str, work_unit: Any) -> None:
+        self.exclusive_tests_scheduled.update(work_unit.keys())
+        self.workqueue.pop(scope)
+        self.assigned_work[node][scope] = work_unit
+        self._send_work_to_node(node, work_unit)
+
+    def _send_work_to_node(self, node: Any, work_unit: Any) -> None:
+        """Send work to the node.
+
+        The work_unit is a dictionary where the keys are test identifiers.
+        This method converts those identifiers into the format expected by the node
+        and then dispatches the work.
+        """
+        test_identifiers = list(work_unit.keys())
+
+        node_test_collection = self.registered_collections[node]
+        test_indices = [
+            node_test_collection.index(test_id)
+            for test_id in test_identifiers
+            if test_id in node_test_collection
+        ]
+
+        if test_indices:
+            node.send_runtest_some(test_indices)
+            self.trace(f"Sent {len(test_indices)} tests to {node} for execution.")
         else:
-            # For non-dedicated nodes, find up to num non-exclusive tests
-            non_exclusive_tests = [test for test in self.pending if self.collection[test] not in self.exclusive_tests][:num]
-            tests_for_node.extend(non_exclusive_tests)
-            for test in non_exclusive_tests:
-                self.pending.remove(test)  # Remove the scheduled tests from pending
-            self.trace(f"Send non-exclusive {len(non_exclusive_tests)} tests to the node {node.gateway.id}")
+            self.trace(f"No matching tests found in node's collection for {node}.")
 
-        if tests_for_node:
-            self.node2pending[node].extend(tests_for_node)
-            node.send_runtest_some(tests_for_node)
-
-    def _split_scope(self, nodeid):
+    def _split_scope(self, nodeid: str) -> str:
         """Group tests by file, except for exclusive tests scheduled on dedicated nodes."""
+        if nodeid in self.exclusive_tests:
+            # Treat each exclusive test as a unique scope
+            return f"{EXCLUSIVE_TEST_SCOPE_PREFIX}::{nodeid}"
         return nodeid.split("::", 1)[0]
