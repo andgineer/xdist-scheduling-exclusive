@@ -8,8 +8,8 @@
 | src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py |       18 |        0 |    100% |           |
 | src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py           |       43 |        4 |     91% | 22-24, 78 |
 | src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py          |        6 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/loadfile\_exclusive.py             |       57 |       38 |     33% |16-18, 22-24, 29-32, 37-40, 43-47, 50-76, 80 |
-|                                                           **TOTAL** |  **125** |   **43** | **66%** |           |
+| src/xdist\_scheduling\_exclusive/loadfile\_exclusive.py             |       49 |       36 |     27% |17-23, 27-29, 35-42, 46-57, 60-63, 72-85, 89-92 |
+|                                                           **TOTAL** |  **117** |   **41** | **65%** |           |
 
 
 ## Setup coverage badge
