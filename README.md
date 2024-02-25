@@ -6,9 +6,9 @@
 |-------------------------------------------------------------------- | -------: | -------: | ------: | --------: |
 | src/xdist\_scheduling\_exclusive/\_\_about\_\_.py                   |        1 |        1 |      0% |         1 |
 | src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py |       18 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py           |       48 |        7 |     85% |21-23, 71, 84-89 |
+| src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py           |       43 |        4 |     91% | 22-24, 78 |
 | src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py          |        6 |        0 |    100% |           |
-|                                                           **TOTAL** |   **73** |    **8** | **89%** |           |
+|                                                           **TOTAL** |   **68** |    **5** | **93%** |           |
 
 
 ## Setup coverage badge
