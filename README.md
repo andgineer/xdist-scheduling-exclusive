@@ -2,14 +2,14 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/andgineer/xdist-scheduling-exclusive/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                                                |    Stmts |     Miss |   Cover |   Missing |
-|-------------------------------------------------------------------- | -------: | -------: | ------: | --------: |
-| src/xdist\_scheduling\_exclusive/\_\_about\_\_.py                   |        1 |        1 |      0% |         1 |
-| src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py |       18 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/exclusive\_scheduling.py           |       43 |        4 |     91% | 22-24, 78 |
-| src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py          |        6 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/loadfile\_exclusive.py             |       49 |       36 |     27% |17-23, 27-29, 35-42, 46-57, 60-63, 72-85, 89-92 |
-|                                                           **TOTAL** |  **117** |   **41** | **65%** |           |
+| Name                                                                 |    Stmts |     Miss |   Cover |   Missing |
+|--------------------------------------------------------------------- | -------: | -------: | ------: | --------: |
+| src/xdist\_scheduling\_exclusive/\_\_about\_\_.py                    |        1 |        1 |      0% |         1 |
+| src/xdist\_scheduling\_exclusive/exclusive\_load\_scheduling.py      |       43 |        4 |     91% | 22-24, 77 |
+| src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py  |       18 |        0 |    100% |           |
+| src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       49 |       36 |     27% |21-25, 29-31, 35-40, 44-55, 58-61, 70-83, 87-90 |
+| src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py           |        6 |        0 |    100% |           |
+|                                                            **TOTAL** |  **117** |   **41** | **65%** |           |
 
 
 ## Setup coverage badge
