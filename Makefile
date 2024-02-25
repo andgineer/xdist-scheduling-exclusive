@@ -25,19 +25,6 @@ reqs:
 	bash ./scripts/compile_requirements.sh
 	uv pip install -r requirements.dev.txt
 
-.PHONY: docs # mark as phony so it always runs even we have a docs folder
-.HELP: docs  ## Docs preview English
-docs:
-	./scripts/docstrings.sh
-	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduling-exclusive/
-	mkdocs serve -f docs/mkdocs-en.yml
-
-.HELP: docs-ru  ## Docs preview Russian
-docs-ru:
-	./scripts/docstrings.sh
-	open -a "Google Chrome" http://127.0.0.1:8000/xdist-scheduling-exclusive/
-	mkdocs serve -f docs/mkdocs-ru.yml
-
 .HELP: help  ## Display this message
 help:
 	@grep -E \

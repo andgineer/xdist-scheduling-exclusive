@@ -94,4 +94,3 @@ class ExclusiveScheduling(LoadScheduling):  # type: ignore
         if tests_to_send:
             self.node2pending[node].extend(tests_to_send)
             node.send_runtest_some(tests_to_send)
-
