@@ -27,6 +27,16 @@ def pytest_xdist_make_scheduler(config, log):
     return ExclusiveLoadScopeScheduling(config, log)
 ```
 
+And place exclusive tests file `exclusive_tests.txt` in `tests/resources/`.
+
+You can get the list with pytest's
+[--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
+option that also sort tests by execution time. 
+Do not forget to clear execution time from the file - there should be only test `node IDs`.
+See example in this project `tests/resources/exclusive_tests.txt`.
+
+Placing the slowest tests in `exclusive_tests.txt` will give you the most benefit.
+
 ### Available Schedulers:
 - `ExclusiveLoadScheduling` Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
 - `ExclusiveLoadFileScheduling`: Place tests from `exclusive_tests.txt` to unique `scopes`.
@@ -34,10 +44,6 @@ Other tests are grouped as in `--dist loadfile`: tests from the same file run on
 - `ExclusiveLoadScopeScheduling`: Schedule tests from `exclusive_tests.txt` first and on dedicated nodes. 
 Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
 
-### Optimizing for Long-Running Tests:
-To identify long-running tests for the exclusive list, utilize pytest's
-[--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
-option to sort tests by execution time.
 
 # Developers
 Do not forget to run `. ./activate.sh`.
