@@ -17,9 +17,14 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
     Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
     """
 
-    def __init__(self, config: Any, log: Optional[Any] = None) -> None:
-        """Load tests from exclusive_tests.txt."""
+    def __init__(self, config: Any, log: Optional[Any] = None, dedicate_nodes: bool = False) -> None:
+        """Load tests from exclusive_tests.txt.
+
+        If dedicate_nodes is True, exclusive tests exclusively occupy their nodes.
+        """
         super().__init__(config, log)
+        self.dedicate_nodes = dedicate_nodes
+        self.exclusive_tests_nodes: Set[str] = set()
         self.exclusive_tests_scheduled: Set[str] = set()
         self.exclusive_tests = load_exclusive_tests()
         self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
@@ -43,10 +48,11 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
                     self._schedule_exclusive_test(node, scope, work_unit)
                     return  # Exit after scheduling an exclusive test to ensure prioritization
 
-        # If no exclusive tests need scheduling, fall back to the parent method
-        super()._assign_work_unit(node)
+        if not self.dedicate_nodes or node.gateway.id not in self.exclusive_tests_nodes:
+            super()._assign_work_unit(node)
 
     def _schedule_exclusive_test(self, node: Any, scope: str, work_unit: Any) -> None:
+        self.exclusive_tests_nodes.add(node.gateway.id)
         self.exclusive_tests_scheduled.update(work_unit.keys())
         self.workqueue.pop(scope)
         self.assigned_work[node][scope] = work_unit

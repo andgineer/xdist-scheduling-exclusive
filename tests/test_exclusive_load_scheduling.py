@@ -15,14 +15,14 @@ def mock_exclusive_scheduling():
         return exclusive_scheduling
 
 
-def test_exclusive_scheduling_load_exclusive_tests(mock_exclusive_scheduling):
+def test_exclusive_load_scheduling_load_exclusive_tests(mock_exclusive_scheduling):
     with patch("builtins.open", mock_open(read_data="exclusive_test_1\nexclusive_test_2")) as mock_file:
         exclusive_tests = load_exclusive_tests()
         mock_file.assert_called_once_with("tests/resources/exclusive_tests.txt", "r", encoding="utf8")
         assert exclusive_tests == ["exclusive_test_1", "exclusive_test_2"]
 
 
-def test_exclusive_scheduling_exclusive_tests_indices(mock_exclusive_scheduling):
+def test_exclusive_load_scheduling_exclusive_tests_indices(mock_exclusive_scheduling):
     mock_exclusive_scheduling.collection = ["test_1", "exclusive_test_1", "test_2", "exclusive_test_2"]
     mock_exclusive_scheduling.exclusive_tests = ["exclusive_test_1", "exclusive_test_2"]
 
@@ -30,7 +30,7 @@ def test_exclusive_scheduling_exclusive_tests_indices(mock_exclusive_scheduling)
     assert indices == [1, 3]  # Indexes of exclusive tests in the collection
 
 
-def test_send_exclusive_test_to_node(mock_exclusive_scheduling):
+def test_exclusive_load_send_exclusive_test_to_node(mock_exclusive_scheduling):
     mock_node = Mock()
     mock_exclusive_scheduling.collection = ["test_1", "exclusive_test_1"]
     mock_exclusive_scheduling.exclusive_tests = ["exclusive_test_1"]
@@ -41,14 +41,14 @@ def test_send_exclusive_test_to_node(mock_exclusive_scheduling):
     mock_node.send_runtest_some.assert_called_once_with([1])
 
 
-def test_exclusive_test_not_in_collection(mock_exclusive_scheduling):
+def test_exclusive_load_test_not_in_collection(mock_exclusive_scheduling):
     mock_exclusive_scheduling.collection = ["test_1", "test_2"]
     mock_exclusive_scheduling.exclusive_tests = ["exclusive_test_1"]
     # Exclusive test is not in the collection, so indices should be empty
     assert mock_exclusive_scheduling.exclusive_tests_indices == []
 
 
-def test_load_exclusive_tests_file_missing(mock_exclusive_scheduling):
+def test_exclusive_load_exclusive_tests_file_missing(mock_exclusive_scheduling):
     with patch("builtins.open", side_effect=FileNotFoundError()):
         with pytest.raises(ValueError) as exc_info:
             load_exclusive_tests("missing_file.txt")

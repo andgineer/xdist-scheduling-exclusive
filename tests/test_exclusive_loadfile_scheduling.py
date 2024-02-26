@@ -24,21 +24,21 @@ def log_mock():
     return Mock()
 
 
-def test_exclusive_group_file_scheduling_init(exclusive_tests_mock, config_mock, log_mock):
+def test_exclusive_loadfile_group_file_scheduling_init(exclusive_tests_mock, config_mock, log_mock):
     scheduler = ExclusiveLoadFileScheduling(config_mock, log_mock)
     # Verify that load_exclusive_tests was called and exclusive_tests attribute is correctly set
     exclusive_tests_mock.assert_called_once()
     assert len(scheduler.exclusive_tests) == 2
 
 
-def test_split_scope_exclusive(exclusive_tests_mock, config_mock, log_mock):
+def test_exclusive_loadfile_split_scope_exclusive(exclusive_tests_mock, config_mock, log_mock):
     scheduler = ExclusiveLoadFileScheduling(config_mock, log_mock)
     nodeid = 'test_exclusive_1'
     scope = scheduler._split_scope(nodeid)
     assert scope.startswith(EXCLUSIVE_TEST_SCOPE_PREFIX)
 
 
-def test_split_scope_regular(exclusive_tests_mock, config_mock, log_mock):
+def test_exclusive_loadfile_split_scope_regular(exclusive_tests_mock, config_mock, log_mock):
     scheduler = ExclusiveLoadFileScheduling(config_mock, log_mock)
     nodeid = 'test_regular_1'
     with patch('xdist_scheduling_exclusive.exclusive_loadfile_scheduling.LoadFileScheduling._split_scope') as super_split_scope_mock:
