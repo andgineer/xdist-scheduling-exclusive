@@ -6,7 +6,7 @@ from typing import Any, Optional, Set
 from xdist.scheduler.loadfile import LoadScopeScheduling
 
 
-EXCLUSIVE_TEST_SCOPE_PREFIX = "__-exclusive-test-__"
+EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 
 
 class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pylint: disable=abstract-method
@@ -27,7 +27,7 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
     def trace(self, *message: str) -> None:
         """Print a message with a timestamp."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        full_message = f"[#]{timestamp}[#] {' '.join(message)}"
+        full_message = f"(@){timestamp}(@) {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
     def load_exclusive_tests(self, filename: str = "tests/resources/exclusive_tests.txt") -> list[str]:

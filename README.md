@@ -7,6 +7,8 @@ pytest-xdist scheduler that runs some tests on dedicated workers.
 Can significantly improve runtime by running long tests on separate 
 workers.
 
+Also in `conftest.py` you can find handy reporting capabilities to see how tests were scheduled.
+
 # Installation
 
 ```bash

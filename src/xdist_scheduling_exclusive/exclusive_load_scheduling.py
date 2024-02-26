@@ -26,7 +26,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
     def trace(self, *message: str) -> None:
         """Print a message with a timestamp."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        full_message = f"[#]{timestamp}[#] {' '.join(message)}"
+        full_message = f"(@){timestamp}(@) {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
     @property
