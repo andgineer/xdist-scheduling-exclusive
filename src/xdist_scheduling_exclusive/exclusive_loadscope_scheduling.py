@@ -36,6 +36,14 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         full_message = f"(@){timestamp}(@) {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
+    @property
+    def collection_is_completed(self) -> bool:
+        """Verify we have enough nodes for dedicated exclusive tests run."""
+        result = super().collection_is_completed
+        if result:
+            assert not self.dedicate_nodes or len(self.exclusive_tests_nodes) < self.numnodes
+        return result  # type: ignore
+
     def _assign_work_unit(self, node: Any) -> None:
         # First, attempt to assign exclusive tests if any are unscheduled
         exclusive_tests_to_schedule = set(self.exclusive_tests) - self.exclusive_tests_scheduled
