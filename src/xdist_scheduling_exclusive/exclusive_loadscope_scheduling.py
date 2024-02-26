@@ -5,6 +5,7 @@ from typing import Any, Optional, Set
 
 from xdist.scheduler.loadfile import LoadScopeScheduling
 
+from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
 
 EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 
@@ -20,7 +21,7 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
         self.exclusive_tests_scheduled: Set[str] = set()
-        self.exclusive_tests = self.load_exclusive_tests()
+        self.exclusive_tests = load_exclusive_tests()
         self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
         self.dedicated_nodes_assigned = False
 
@@ -29,15 +30,6 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         full_message = f"(@){timestamp}(@) {' '.join(message)}"
         print(full_message, file=sys.stderr)
-
-    def load_exclusive_tests(self, filename: str = "tests/resources/exclusive_tests.txt") -> list[str]:
-        """Load tests from a file."""
-        try:
-            with open(filename, "r", encoding="utf8") as f:
-                return [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
-        except FileNotFoundError:
-            self.log(f"Exclusive test list '{filename} not found'.")
-            return []
 
     def _assign_work_unit(self, node: Any) -> None:
         # First, attempt to assign exclusive tests if any are unscheduled
