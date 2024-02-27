@@ -5,9 +5,9 @@
 | Name                                                                 |    Stmts |     Miss |   Cover |   Missing |
 |--------------------------------------------------------------------- | -------: | -------: | ------: | --------: |
 | src/xdist\_scheduling\_exclusive/\_\_about\_\_.py                    |        1 |        1 |      0% |         1 |
-| src/xdist\_scheduling\_exclusive/exclusive\_load\_scheduling.py      |       43 |        4 |     91% | 22-24, 77 |
+| src/xdist\_scheduling\_exclusive/exclusive\_load\_scheduling.py      |       43 |        4 |     91% | 27-29, 82 |
 | src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py  |       18 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       53 |        1 |     98% |        89 |
+| src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       53 |        1 |     98% |        96 |
 | src/xdist\_scheduling\_exclusive/load\_exclusive\_tests.py           |        6 |        0 |    100% |           |
 |                                                            **TOTAL** |  **121** |    **6** | **95%** |           |
 
