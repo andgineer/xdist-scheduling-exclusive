@@ -1,7 +1,7 @@
 """pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
 import sys
 from datetime import datetime
-from typing import Any, List
+from typing import Any, List, Optional
 
 from xdist.dsession import LoadScheduling
 from xdist.workermanage import WorkerController
@@ -17,10 +17,15 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
 
     _exclusive_tests_indices: List[int]
 
-    def __init__(self, config: Any, log: Any) -> None:
+    def __init__(
+        self,
+        config: Any,
+        log: Optional[Any] = None,
+        exclusive_tests: Optional[List[str]] = None,
+    ) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
-        self.exclusive_tests = load_exclusive_tests()
+        self.exclusive_tests = exclusive_tests or load_exclusive_tests()
         self.trace(f"ExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
     def trace(self, *message: str) -> None:

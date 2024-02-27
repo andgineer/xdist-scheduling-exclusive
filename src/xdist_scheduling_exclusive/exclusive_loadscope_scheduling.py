@@ -1,7 +1,7 @@
 """pytest-xdist LoadScopeScheduling descendant that schedule exclusive tests to dedicated nodes."""
 import sys
 from datetime import datetime
-from typing import Any, Optional, Set
+from typing import Any, Optional, Set, List
 
 from xdist.scheduler.loadfile import LoadScopeScheduling
 
@@ -17,16 +17,23 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
     Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
     """
 
-    def __init__(self, config: Any, log: Optional[Any] = None, dedicate_nodes: bool = False) -> None:
+    def __init__(
+        self,
+        config: Any,
+        log: Optional[Any] = None,
+        exclusive_tests: Optional[List[str]] = None,
+        dedicate_nodes: bool = False,
+    ) -> None:
         """Load tests from exclusive_tests.txt.
 
         If dedicate_nodes is True, exclusive tests exclusively occupy their nodes.
         """
         super().__init__(config, log)
+        self.exclusive_tests = exclusive_tests or load_exclusive_tests()
         self.dedicate_nodes = dedicate_nodes
         self.exclusive_tests_nodes: Set[str] = set()
         self.exclusive_tests_scheduled: Set[str] = set()
-        self.exclusive_tests = load_exclusive_tests()
+
         self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
         self.dedicated_nodes_assigned = False
 

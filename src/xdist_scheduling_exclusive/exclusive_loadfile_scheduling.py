@@ -1,6 +1,6 @@
 """pytest-xdist LoadFileScheduling descendant that place exclusive tests to separate group."""
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional, List
 
 from xdist.scheduler.loadfile import LoadFileScheduling
 
@@ -16,10 +16,15 @@ class ExclusiveLoadFileScheduling(LoadFileScheduling):  # type: ignore  # pylint
     Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
     """
 
-    def __init__(self, config: Any, log: Any) -> None:
+    def __init__(
+        self,
+        config: Any,
+        log: Optional[Any] = None,
+        exclusive_tests: Optional[List[str]] = None,
+    ) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
-        self.exclusive_tests = load_exclusive_tests()
+        self.exclusive_tests = exclusive_tests or load_exclusive_tests()
         self.trace(f"ExclusiveLoadFileScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
     def trace(self, *message: str) -> None:
