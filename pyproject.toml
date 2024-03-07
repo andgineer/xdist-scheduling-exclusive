@@ -10,7 +10,7 @@ keywords = [ "opensearch", "log", "log-handler",]
 classifiers = [ "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent",]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [ "pytest-xdist",]
 [[project.authors]]
 name = "Andrey Sorokin"
 email = "andrey@sorokin.engineer"
