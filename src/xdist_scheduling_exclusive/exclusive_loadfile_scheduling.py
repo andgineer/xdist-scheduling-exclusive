@@ -1,4 +1,5 @@
 """pytest-xdist LoadFileScheduling descendant that place exclusive tests to separate group."""
+
 from datetime import datetime
 from typing import Any, Optional, List
 

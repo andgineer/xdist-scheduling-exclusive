@@ -1,4 +1,5 @@
 """pytest-xdist LoadScopeScheduling descendant that schedule exclusive tests to dedicated nodes."""
+
 import sys
 from datetime import datetime
 from typing import Any, Optional, Set, List

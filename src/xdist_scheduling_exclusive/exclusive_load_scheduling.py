@@ -1,4 +1,5 @@
 """pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
+
 import sys
 from datetime import datetime
 from typing import Any, List, Optional
