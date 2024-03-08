@@ -3,6 +3,7 @@
 import sys
 from datetime import datetime
 from typing import Any, List, Optional
+from functools import cached_property
 
 from xdist.dsession import LoadScheduling
 from xdist.workermanage import WorkerController
@@ -35,22 +36,20 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         full_message = f"(@){timestamp}(@) {' '.join(message)}"
         print(full_message, file=sys.stderr)
 
-    @property
+    @cached_property
     def exclusive_tests_indices(self) -> list[int]:
         """Map exclusive test names to indices.
 
         At __init__ tests are not collected so we do lazy initialization.
         Calculate at first access and use cache afterward.
         """
-        if not hasattr(self, "_exclusive_tests_indices"):
-            self._exclusive_tests_indices = [
-                self.collection.index(
-                    name
-                )  # we could create reverse-index but not worth it - less than 100 tests
-                for name in self.exclusive_tests
-                if name in self.collection
-            ]
-        return self._exclusive_tests_indices
+        return [
+            self.collection.index(
+                name
+            )  # we could create reverse-index but not worth it - less than 100 tests
+            for name in self.exclusive_tests
+            if name in self.collection
+        ]
 
     def _send_tests(self, node: WorkerController, num: int) -> None:
         tests_to_send = []
