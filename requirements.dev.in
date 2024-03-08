@@ -17,6 +17,7 @@ pymdown-extensions
 mkdocs-awesome-pages-plugin
 
 # build & reqs management
+-e .
 pip-tools
 hatchling
 toml
