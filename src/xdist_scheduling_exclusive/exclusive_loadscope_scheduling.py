@@ -1,12 +1,12 @@
 """pytest-xdist LoadScopeScheduling descendant that schedule exclusive tests to dedicated nodes."""
 
-import sys
-from datetime import datetime
 from typing import Any, Optional, Set, List
 
 from xdist.scheduler.loadfile import LoadScopeScheduling
 
-from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests
+
+from xdist_scheduling_exclusive.scheduler_base import trace
 
 EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 
@@ -35,21 +35,18 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         self.exclusive_tests_nodes: Set[str] = set()
         self.exclusive_tests_scheduled: Set[str] = set()
 
-        self.trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
+        trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
         self.dedicated_nodes_assigned = False
-
-    def trace(self, *message: str) -> None:
-        """Print a message with a timestamp."""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        full_message = f"(@){timestamp}(@) {' '.join(message)}"
-        print(full_message, file=sys.stderr)
 
     @property
     def collection_is_completed(self) -> bool:
         """Verify we have enough nodes for dedicated exclusive tests run."""
         result = super().collection_is_completed
         if result:
-            assert not self.dedicate_nodes or len(self.exclusive_tests_nodes) < self.numnodes
+            assert not self.dedicate_nodes or len(self.exclusive_tests_nodes) < self.numnodes, (
+                f"Not enough nodes ({self.numnodes}) to dedicate "
+                f"to exclusive tests ({len(self.exclusive_tests_nodes)})"
+            )
         return result  # type: ignore
 
     def _assign_work_unit(self, node: Any) -> None:
@@ -92,9 +89,9 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
 
         if test_indices:
             node.send_runtest_some(test_indices)
-            self.trace(f"Sent {len(test_indices)} tests to {node} for execution.")
+            trace(f"Sent {len(test_indices)} tests to {node} for execution.")
         else:
-            self.trace(f"No matching tests found in node's collection for {node}.")
+            trace(f"No matching tests found in node's collection for {node}.")
 
     def _split_scope(self, nodeid: str) -> str:
         """Group tests by file, except for exclusive tests scheduled on dedicated nodes."""

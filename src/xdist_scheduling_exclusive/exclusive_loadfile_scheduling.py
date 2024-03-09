@@ -1,11 +1,12 @@
 """pytest-xdist LoadFileScheduling descendant that place exclusive tests to separate group."""
 
-from datetime import datetime
 from typing import Any, Optional, List
 
 from xdist.scheduler.loadfile import LoadFileScheduling
 
-from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests
+
+from xdist_scheduling_exclusive.scheduler_base import trace
 
 EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 
@@ -26,13 +27,7 @@ class ExclusiveLoadFileScheduling(LoadFileScheduling):  # type: ignore  # pylint
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
         self.exclusive_tests = exclusive_tests or load_exclusive_tests()
-        self.trace(f"ExclusiveLoadFileScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
-
-    def trace(self, *message: str) -> None:
-        """Print a message with a timestamp."""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        full_message = f"(@){timestamp}(@) {' '.join(message)}"
-        print(full_message)
+        trace(f"ExclusiveLoadFileScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
     def _split_scope(self, nodeid: str) -> str:
         """Determine the scope (grouping) of a nodeid, exclusive tests in unique scopes."""

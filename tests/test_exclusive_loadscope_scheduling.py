@@ -9,7 +9,7 @@ def mock_exclusive_load_scope_scheduling():
     # Patch the __init__ method of the LoadScopeScheduling parent class to prevent it from running
     with patch('xdist.scheduler.loadfile.LoadScopeScheduling.__init__', return_value=None):
         # Patch the load_exclusive_tests function to return a mock set of exclusive tests
-        with patch('xdist_scheduling_exclusive.load_exclusive_tests.load_exclusive_tests', return_value={"test_exclusive_1", "test_exclusive_2"}):
+        with patch('xdist_scheduling_exclusive.scheduler_base.load_exclusive_tests', return_value={"test_exclusive_1", "test_exclusive_2"}):
             exclusive_load_scope_scheduling = ExclusiveLoadScopeScheduling(Mock(), Mock())
             exclusive_load_scope_scheduling.workqueue = MagicMock()
             exclusive_load_scope_scheduling.assigned_work = MagicMock()

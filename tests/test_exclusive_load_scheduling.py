@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock, patch, mock_open, MagicMock
 from xdist_scheduling_exclusive import ExclusiveLoadScheduling
-from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests, trace
 
 
 @pytest.fixture
@@ -56,7 +56,7 @@ def test_exclusive_load_exclusive_tests_file_missing(mock_exclusive_scheduling):
 
 
 def test_trace_functionality(mock_exclusive_scheduling, capsys):
-    mock_exclusive_scheduling.trace("Test message")
+    trace("Test message")
     captured = capsys.readouterr()
     assert "Test message" in captured.err
 

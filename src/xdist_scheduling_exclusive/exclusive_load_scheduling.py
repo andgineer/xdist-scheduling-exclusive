@@ -1,14 +1,14 @@
 """pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
 
-import sys
-from datetime import datetime
 from typing import Any, List, Optional
 from functools import cached_property
 
 from xdist.dsession import LoadScheduling
 from xdist.workermanage import WorkerController
 
-from xdist_scheduling_exclusive.load_exclusive_tests import load_exclusive_tests
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests
+
+from xdist_scheduling_exclusive.scheduler_base import trace
 
 
 class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
@@ -28,13 +28,17 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
         self.exclusive_tests = exclusive_tests or load_exclusive_tests()
-        self.trace(f"ExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
+        trace(f"ExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
 
-    def trace(self, *message: str) -> None:
-        """Print a message with a timestamp."""
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        full_message = f"(@){timestamp}(@) {' '.join(message)}"
-        print(full_message, file=sys.stderr)
+    @property
+    def collection_is_completed(self) -> bool:
+        """Verify we have enough nodes for dedicated exclusive tests run."""
+        result = super().collection_is_completed
+        if result:
+            assert (
+                len(self.exclusive_tests) < self.numnodes
+            ), f"Not enough nodes ({self.numnodes}) for exclusive tests ({len(self.exclusive_tests)})"
+        return result  # type: ignore
 
     @cached_property
     def exclusive_tests_indices(self) -> list[int]:
@@ -58,7 +62,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         # Attempt to send exclusive tests first
         for exclusive_test in self.exclusive_tests_indices[:]:  # Copy list for safe iteration
             if exclusive_test in self.pending:
-                self.trace(
+                trace(
                     f"Send exclusive test {self.collection[exclusive_test]} " f"to the node {node.gateway.id}"
                 )
                 self.pending.remove(exclusive_test)
@@ -72,7 +76,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
             for test in self.pending[:]:  # Copy list for safe iteration
                 if len(tests_to_send) < num:
                     if test not in self.exclusive_tests_indices:
-                        self.trace(
+                        trace(
                             f"Send non-exclusive test {self.collection[test]} "
                             f"to the node {node.gateway.id}"
                         )
