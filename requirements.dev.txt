@@ -7,8 +7,6 @@ babel==2.14.0
     # via mkdocs-material
 bracex==2.4
     # via wcmatch
-build==1.0.3
-    # via pip-tools
 certifi==2023.11.17
     # via requests
 cfgv==3.4.0
@@ -18,7 +16,6 @@ charset-normalizer==3.3.2
 click==8.1.7
     # via
     #   mkdocs
-    #   pip-tools
     #   typer
 colorama==0.4.6
     # via mkdocs-material
@@ -80,7 +77,6 @@ nodeenv==1.8.0
     # via pre-commit
 packaging==23.2
     # via
-    #   build
     #   hatchling
     #   mkdocs
     #   pytest
@@ -90,9 +86,6 @@ pathspec==0.12.1
     # via
     #   hatchling
     #   mkdocs
-pip==24.0
-    # via pip-tools
-pip-tools==7.4.0
 platformdirs==4.1.0
     # via
     #   mkdocs
@@ -109,10 +102,6 @@ pygments==2.17.2
 pylint==3.0.3
 pymdown-extensions==10.5
     # via mkdocs-material
-pyproject-hooks==1.0.0
-    # via
-    #   build
-    #   pip-tools
 pytest==8.0.1
     # via
     #   pytest-cov
@@ -135,9 +124,7 @@ regex==2023.10.3
 requests==2.31.0
     # via mkdocs-material
 setuptools==69.1.0
-    # via
-    #   nodeenv
-    #   pip-tools
+    # via nodeenv
 six==1.16.0
     # via python-dateutil
 snowballstemmer==2.2.0
@@ -162,5 +149,3 @@ watchdog==3.0.0
     # via mkdocs
 wcmatch==8.5
     # via mkdocs-awesome-pages-plugin
-wheel==0.42.0
-    # via pip-tools
