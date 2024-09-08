@@ -74,17 +74,16 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         if not exclusive_sent:
             # If no exclusive test was sent, fill in with regular pending tests
             for test in self.pending[:]:  # Copy list for safe iteration
-                if len(tests_to_send) < num:
-                    if test not in self.exclusive_tests_indices:
-                        trace(
-                            f"Send non-exclusive test {self.collection[test]} "
-                            f"to the node {node.gateway.id}"
-                        )
-                        tests_to_send.append(test)
-                        self.pending.remove(test)
-                else:
+                if len(tests_to_send) >= num:
                     break  # Stop if we have enough tests to send
 
+                if test not in self.exclusive_tests_indices:
+                    trace(
+                        f"Send non-exclusive test {self.collection[test]} "
+                        f"to the node {node.gateway.id}"
+                    )
+                    tests_to_send.append(test)
+                    self.pending.remove(test)
         # Send the collected tests to the node
         if tests_to_send:
             self.node2pending[node].extend(tests_to_send)

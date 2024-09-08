@@ -50,9 +50,10 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         return result  # type: ignore
 
     def _assign_work_unit(self, node: Any) -> None:
-        # First, attempt to assign exclusive tests if any are unscheduled
-        exclusive_tests_to_schedule = set(self.exclusive_tests) - self.exclusive_tests_scheduled
-        if exclusive_tests_to_schedule:
+        if (
+            exclusive_tests_to_schedule := set(self.exclusive_tests)
+            - self.exclusive_tests_scheduled
+        ):
             for scope, work_unit in self.workqueue.items():
                 # Find if any test in the current scope is exclusive and unscheduled
                 exclusive_test_in_scope = any(test in self.exclusive_tests for test in work_unit)
