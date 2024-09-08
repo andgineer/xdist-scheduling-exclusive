@@ -79,8 +79,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
 
                 if test not in self.exclusive_tests_indices:
                     trace(
-                        f"Send non-exclusive test {self.collection[test]} "
-                        f"to the node {node.gateway.id}"
+                        f"Send non-exclusive test {self.collection[test]} " f"to the node {node.gateway.id}"
                     )
                     tests_to_send.append(test)
                     self.pending.remove(test)
