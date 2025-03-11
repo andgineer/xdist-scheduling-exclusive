@@ -1,14 +1,12 @@
 """pytest-xdist scheduler that runs exclusive tests on dedicated workers."""
 
-from typing import Any, List, Optional
 from functools import cached_property
+from typing import Any, Optional
 
 from xdist.dsession import LoadScheduling
 from xdist.workermanage import WorkerController
 
-from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests
-
-from xdist_scheduling_exclusive.scheduler_base import trace
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests, trace
 
 
 class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
@@ -17,13 +15,13 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
     Run tests from exclusive_tests.txt on separate xdist nodes.
     """
 
-    _exclusive_tests_indices: List[int]
+    _exclusive_tests_indices: list[int]
 
     def __init__(
         self,
         config: Any,
         log: Optional[Any] = None,
-        exclusive_tests: Optional[List[str]] = None,
+        exclusive_tests: Optional[list[str]] = None,
     ) -> None:
         """Load tests from exclusive_tests.txt."""
         super().__init__(config, log)
@@ -35,9 +33,10 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         """Verify we have enough nodes for dedicated exclusive tests run."""
         result = super().collection_is_completed
         if result:
-            assert (
-                len(self.exclusive_tests) < self.numnodes
-            ), f"Not enough nodes ({self.numnodes}) for exclusive tests ({len(self.exclusive_tests)})"
+            assert len(self.exclusive_tests) < self.numnodes, (
+                f"Not enough nodes ({self.numnodes}) "
+                f"for exclusive tests ({len(self.exclusive_tests)})"
+            )
         return result  # type: ignore
 
     @cached_property
@@ -49,7 +48,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         """
         return [
             self.collection.index(
-                name
+                name,
             )  # we could create reverse-index but not worth it - less than 100 tests
             for name in self.exclusive_tests
             if name in self.collection
@@ -63,7 +62,8 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         for exclusive_test in self.exclusive_tests_indices[:]:  # Copy list for safe iteration
             if exclusive_test in self.pending:
                 trace(
-                    f"Send exclusive test {self.collection[exclusive_test]} " f"to the node {node.gateway.id}"
+                    f"Send exclusive test {self.collection[exclusive_test]} "
+                    f"to the node {node.gateway.id}",
                 )
                 self.pending.remove(exclusive_test)
                 tests_to_send.append(exclusive_test)
@@ -79,7 +79,8 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
 
                 if test not in self.exclusive_tests_indices:
                     trace(
-                        f"Send non-exclusive test {self.collection[test]} " f"to the node {node.gateway.id}"
+                        f"Send non-exclusive test {self.collection[test]} "
+                        f"to the node {node.gateway.id}",
                     )
                     tests_to_send.append(test)
                     self.pending.remove(test)

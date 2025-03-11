@@ -7,7 +7,10 @@ from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests, trac
 @pytest.fixture
 def mock_exclusive_scheduling():
     # Patch the __init__ method of the parent class to prevent it from running
-    with patch('xdist_scheduling_exclusive.exclusive_load_scheduling.ExclusiveLoadScheduling.__init__', return_value=None):
+    with patch(
+        "xdist_scheduling_exclusive.exclusive_load_scheduling.ExclusiveLoadScheduling.__init__",
+        return_value=None,
+    ):
         exclusive_scheduling = ExclusiveLoadScheduling(Mock(), Mock())
         exclusive_scheduling.node2pending = MagicMock()  # Mocking the node2pending attribute
         exclusive_scheduling.collection = MagicMock()  # Mocking the collection if necessary
@@ -16,14 +19,21 @@ def mock_exclusive_scheduling():
 
 
 def test_exclusive_load_scheduling_load_exclusive_tests(mock_exclusive_scheduling):
-    with patch("builtins.open", mock_open(read_data="exclusive_test_1\nexclusive_test_2")) as mock_file:
+    with patch(
+        "builtins.open", mock_open(read_data="exclusive_test_1\nexclusive_test_2")
+    ) as mock_file:
         exclusive_tests = load_exclusive_tests()
-        mock_file.assert_called_once_with("tests/resources/exclusive_tests.txt", "r", encoding="utf8")
+        mock_file.assert_called_once_with("tests/resources/exclusive_tests.txt", encoding="utf8")
         assert exclusive_tests == ["exclusive_test_1", "exclusive_test_2"]
 
 
 def test_exclusive_load_scheduling_exclusive_tests_indices(mock_exclusive_scheduling):
-    mock_exclusive_scheduling.collection = ["test_1", "exclusive_test_1", "test_2", "exclusive_test_2"]
+    mock_exclusive_scheduling.collection = [
+        "test_1",
+        "exclusive_test_1",
+        "test_2",
+        "exclusive_test_2",
+    ]
     mock_exclusive_scheduling.exclusive_tests = ["exclusive_test_1", "exclusive_test_2"]
 
     indices = mock_exclusive_scheduling.exclusive_tests_indices

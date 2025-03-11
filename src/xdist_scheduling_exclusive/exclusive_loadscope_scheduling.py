@@ -1,12 +1,10 @@
 """pytest-xdist LoadScopeScheduling descendant that schedule exclusive tests to dedicated nodes."""
 
-from typing import Any, Optional, Set, List
+from typing import Any, Optional
 
 from xdist.scheduler.loadfile import LoadScopeScheduling
 
-from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests
-
-from xdist_scheduling_exclusive.scheduler_base import trace
+from xdist_scheduling_exclusive.scheduler_base import load_exclusive_tests, trace
 
 EXCLUSIVE_TEST_SCOPE_PREFIX = "-exclusive-test-"
 
@@ -22,7 +20,7 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         self,
         config: Any,
         log: Optional[Any] = None,
-        exclusive_tests: Optional[List[str]] = None,
+        exclusive_tests: Optional[list[str]] = None,
         dedicate_nodes: bool = False,
     ) -> None:
         """Load tests from exclusive_tests.txt.
@@ -32,10 +30,12 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         super().__init__(config, log)
         self.exclusive_tests = exclusive_tests or load_exclusive_tests()
         self.dedicate_nodes = dedicate_nodes
-        self.exclusive_tests_nodes: Set[str] = set()
-        self.exclusive_tests_scheduled: Set[str] = set()
+        self.exclusive_tests_nodes: set[str] = set()
+        self.exclusive_tests_scheduled: set[str] = set()
 
-        trace(f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.")
+        trace(
+            f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.",
+        )
         self.dedicated_nodes_assigned = False
 
     @property

@@ -31,7 +31,7 @@ And place exclusive tests file `exclusive_tests.txt` in `tests/resources/`.
 
 You can get the list with pytest's
 [--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
-option that also sort tests by execution time. 
+option that also sort tests by execution time.
 Do not forget to clear execution time from the file - there should be only test `node IDs`.
 See example in this project `tests/resources/exclusive_tests.txt`.
 
@@ -41,7 +41,7 @@ Placing the slowest tests in `exclusive_tests.txt` will give you the most benefi
 - `ExclusiveLoadScheduling` Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
 - `ExclusiveLoadFileScheduling`: Place tests from `exclusive_tests.txt` to unique `scopes`.
 Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
-- `ExclusiveLoadScopeScheduling`: Schedule tests from `exclusive_tests.txt` first and on dedicated nodes. 
+- `ExclusiveLoadScopeScheduling`: Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
 Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
 
 
