@@ -6,16 +6,16 @@ A pytest-xdist scheduler for running specific tests on dedicated workers.
 
 ## Features
 
-- Improves test runtime by assigning long tests to separate workers
+- Improves test runtime by assigning slow tests to separate workers
 - Includes custom reporting in `conftest.py` to show test scheduling details
 
-# Installation
+## Installation
 
 ```bash
 pip install xdist-scheduling-exclusive pytest-xdist
 ```
 
-# Usage
+## Usage
 
 To integrate with your pytest setup, update conftest.py as follows:
 
@@ -27,33 +27,40 @@ def pytest_xdist_make_scheduler(config, log):
     return ExclusiveLoadScopeScheduling(config, log)
 ```
 
-And place exclusive tests file `exclusive_tests.txt` in `tests/resources/`.
+Create an exclusive tests file `exclusive_tests.txt` in `tests/resources/`.
 
-You can get the list with pytest's
+You can identify slow tests using pytest's
 [--durations](https://docs.pytest.org/en/latest/how-to/usage.html#profiling-test-execution-duration)
-option that also sort tests by execution time.
-Do not forget to clear execution time from the file - there should be only test `node IDs`.
-See example in this project `tests/resources/exclusive_tests.txt`.
+option which sorts tests by execution time.
+Remember to remove execution times from the file - it should contain only test `node IDs`.
+See the example in this project's `tests/resources/exclusive_tests.txt`.
 
 Placing the slowest tests in `exclusive_tests.txt` will give you the most benefit.
 
 ### Available Schedulers:
-- `ExclusiveLoadScheduling` Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
-- `ExclusiveLoadFileScheduling`: Place tests from `exclusive_tests.txt` to unique `scopes`.
-Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
-- `ExclusiveLoadScopeScheduling`: Schedule tests from `exclusive_tests.txt` first and on dedicated nodes.
-Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
+- `ExclusiveLoadScheduling`: Schedules tests from `exclusive_tests.txt` first on dedicated nodes.
+- `ExclusiveLoadFileScheduling`: Places tests from `exclusive_tests.txt` into unique scopes.
+  Other tests are grouped as in `--dist loadfile`: tests from the same file run on the same node.
+- `ExclusiveLoadScopeScheduling`: Schedules tests from `exclusive_tests.txt` first on dedicated nodes.
+  Other tests are grouped as in `--dist loadscope`: tests from the same file run on the same node.
 
 
-# Developers
-Do not forget to run `. ./activate.sh`.
+## Development
 
-To see how tests were scheduled use something like
+Activate the development environment:
+```bash
+. ./activate.sh
+```
 
-    python -m pytest -n 4 --xdist-report -s
+To see how tests were scheduled:
+```bash
+python -m pytest -n 4 --xdist-report -s
+```
 
-# Scripts
-    make help
+View available scripts:
+```bash
+make help
+```
 
 ## Coverage report
 * [Codecov](https://app.codecov.io/gh/andgineer/xdist-scheduling-exclusive/tree/main/src%2Fxdist_scheduling_exclusive)
