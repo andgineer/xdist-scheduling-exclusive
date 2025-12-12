@@ -10,31 +10,33 @@ This is a Python package that extends pytest-xdist with custom test schedulers o
 
 ```bash
 # Environment setup (creates venv with Python 3.12)
-. ./activate.sh
+source ./activate.sh
 
 # Install dependencies
-make reqs
+source ./activate.sh && make reqs
 
 # Run tests with xdist scheduling
-python -m pytest -n 4 --xdist-report
+source ./activate.sh && python -m pytest -n 4 --xdist-report
 
 # Validate scheduling works correctly
-python -m pytest -n 4 --validate-scheduling
+source ./activate.sh && python -m pytest -n 4 --validate-scheduling
 
 # Run specific test types
-python -m pytest tests/test_mock_exclusive.py -n 4
-python -m pytest tests/test_exclusive_load_scheduling.py
+source ./activate.sh && python -m pytest tests/test_mock_exclusive.py -n 4
+source ./activate.sh && python -m pytest tests/test_exclusive_load_scheduling.py
 
-# Linting (uses ruff with different line lengths: src=100, tests=99)
-ruff check src/
-ruff check tests/
-mypy src/
+# Code quality
+source ./activate.sh && pre-commit run --all-files
 
 # Version management
-make ver-bug       # Bump patch version
-make ver-feature   # Bump minor version
-make ver-release   # Bump major version
+source ./activate.sh && make ver-bug       # Bump patch version
+source ./activate.sh && make ver-feature   # Bump minor version
+source ./activate.sh && make ver-release   # Bump major version
 ```
+
+**IMPORTANT**: Always activate the virtual environment before running any commands. Use `source ./activate.sh` before each command.
+
+**IMPORTANT**: Always use `pre-commit run --all-files` for code quality checks. Never run ruff or mypy directly.
 
 ## Architecture
 

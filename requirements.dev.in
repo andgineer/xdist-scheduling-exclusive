@@ -6,9 +6,8 @@ pytest-cov
 
 # lint
 pre-commit
-mypy
-pylint
 pydocstyle
+pyrefly
 
 # docs
 lazydocs

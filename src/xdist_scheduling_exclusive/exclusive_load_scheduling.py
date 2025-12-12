@@ -46,6 +46,8 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         At __init__ tests are not collected so we do lazy initialization.
         Calculate at first access and use cache afterward.
         """
+        if self.collection is None:
+            return []
         return [
             self.collection.index(
                 name,
@@ -55,6 +57,7 @@ class ExclusiveLoadScheduling(LoadScheduling):  # type: ignore
         ]
 
     def _send_tests(self, node: WorkerController, num: int) -> None:
+        assert self.collection is not None, "Collection must be completed before sending tests"
         tests_to_send = []
         exclusive_sent = False
 

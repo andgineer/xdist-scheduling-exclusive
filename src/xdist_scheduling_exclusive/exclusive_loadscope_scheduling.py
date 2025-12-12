@@ -34,7 +34,8 @@ class ExclusiveLoadScopeScheduling(LoadScopeScheduling):  # type: ignore  # pyli
         self.exclusive_tests_scheduled: set[str] = set()
 
         trace(
-            f"LoadFileExclusiveScheduling have loaded {len(self.exclusive_tests)} exclusive tests.",
+            f"ExclusiveLoadScopeScheduling have loaded {len(self.exclusive_tests)} "
+            f"exclusive tests.",
         )
         self.dedicated_nodes_assigned = False
 
