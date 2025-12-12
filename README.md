@@ -5,11 +5,11 @@
 | Name                                                                 |    Stmts |     Miss |   Cover |   Missing |
 |--------------------------------------------------------------------- | -------: | -------: | ------: | --------: |
 | src/xdist\_scheduling\_exclusive/\_\_about\_\_.py                    |        1 |        1 |      0% |         1 |
-| src/xdist\_scheduling\_exclusive/exclusive\_load\_scheduling.py      |       42 |        8 |     81% |27-29, 34-40, 78 |
+| src/xdist\_scheduling\_exclusive/exclusive\_load\_scheduling.py      |       44 |        9 |     80% |27-29, 34-40, 50, 81 |
 | src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py  |       13 |        0 |    100% |           |
-| src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       46 |        1 |     98% |        92 |
+| src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       46 |        1 |     98% |        93 |
 | src/xdist\_scheduling\_exclusive/scheduler\_base.py                  |       12 |        0 |    100% |           |
-|                                                            **TOTAL** |  **114** |   **10** | **91%** |           |
+|                                                            **TOTAL** |  **116** |   **11** | **91%** |           |
 
 
 ## Setup coverage badge
