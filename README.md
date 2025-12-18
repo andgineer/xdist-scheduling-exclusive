@@ -9,7 +9,7 @@
 | src/xdist\_scheduling\_exclusive/exclusive\_loadfile\_scheduling.py  |       13 |        0 |    100% |           |
 | src/xdist\_scheduling\_exclusive/exclusive\_loadscope\_scheduling.py |       46 |        1 |     98% |        93 |
 | src/xdist\_scheduling\_exclusive/scheduler\_base.py                  |       12 |        0 |    100% |           |
-|                                                            **TOTAL** |  **116** |   **11** | **91%** |           |
+| **TOTAL**                                                            |  **116** |   **11** | **91%** |           |
 
 
 ## Setup coverage badge
